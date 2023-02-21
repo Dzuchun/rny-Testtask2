@@ -60,7 +60,7 @@ namespace rny_Testtask2.Infrastructure
             return new Rating()
             {
                 Book = book,
-                Score = Random.Shared.Next(100),
+                Score = Random.Shared.Next(5) + 1,
             };
         }
     }

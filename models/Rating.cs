@@ -17,6 +17,6 @@ namespace rny_Testtask2.models
         [ForeignKey(name: "Book")]
         public int BookId { get; set; }
 
-        public Book Book { get; set; }
+        public Book? Book { get; set; }
     }
 }

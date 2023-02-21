@@ -11,22 +11,22 @@ namespace rny_Testtask2.models
         public int Id { get; set; }
 
         [Column(name: "title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Column(name: "cover")]
-        public string Cover { get; set; }
+        public string? Cover { get; set; }
 
         [Column(name: "content")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         [Column(name: "author")]
-        public string Author { get; set; }
+        public string? Author { get; set; }
 
         [Column(name: "genre")]
-        public string Genre { get; set; }
+        public string? Genre { get; set; }
 
-        public IEnumerable<Rating> Ratings { get; set; }
+        public IEnumerable<Rating> Ratings { get; set; } = new List<Rating>();
 
-        public IEnumerable<Review> Reviews { get; set; }
+        public IEnumerable<Review> Reviews { get; set; } = new List<Review>();
     }
 }

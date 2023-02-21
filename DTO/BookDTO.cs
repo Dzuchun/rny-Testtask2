@@ -1,30 +1,56 @@
 ﻿using rny_Testtask2.DTO;
 using rny_Testtask2.models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace rny_Testtask2.dto
 {
-    public class BookDTO
+    public class BookDto
     {
-        public int id { get; set; }
-        public string title { get; set; }
-        public string author { get; set; }
-        public decimal rating { get; set; }
-        public int reviewsNumber { get; set; }
-
-        public static BookDTO Create(Book book)
+        public int? Id { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
+        public decimal? Rating { get; set; }
+        public string? Genre { get; set; }
+        public string? Cover { get; set; }
+        public string? Content { get; set; }
+        public int? ReviewsNumber { get; set; }
+        public class Review
         {
-            return Create(book, DTOHelper.GetBookRating(book));
+            public int Id { get; set; }
+            public string? Message { get; set; }
+            public string? Reviewer { get; set; }
         }
 
-        public static BookDTO Create(Book book, decimal averageRating)
+        public Review[]? Reviews { get; set; }
+
+        public static BookDto CreateForList(Book book)
         {
-            return new BookDTO()
+            return new BookDto()
             {
-                id = book.Id,
-                title = book.Title,
-                author = book.Author,
-                rating = averageRating,
-                reviewsNumber = book.Reviews.Count(),
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Rating = DTOHelper.GetBookRating(book),
+                ReviewsNumber = book.Reviews.Count(),
+            };
+        }
+
+        public static BookDto CreateDetailed(Book book)
+        {
+            return new()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Cover = book.Cover,
+                Content = book.Content,
+                Rating = DTOHelper.GetBookRating(book),
+                Reviews = book.Reviews.Select(r => new Review
+                {
+                    Id = r.Id,
+                    Message = r.Message,
+                    Reviewer = r.Reviewer,
+                }).ToArray(),
             };
         }
     }
