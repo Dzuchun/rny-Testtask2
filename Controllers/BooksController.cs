@@ -22,8 +22,8 @@ namespace rny_Testtask2.Controllers
 
         private static Dictionary<string, Func<BookDto, object>> orders = new()
         {
-            { "title", b => b.Title },
-            { "author", b => b.Author },
+            { "title", b => b.Title ?? string.Empty },
+            { "author", b => b.Author ?? string.Empty },
         };
 
         // GET api/books?order=...
@@ -51,14 +51,13 @@ namespace rny_Testtask2.Controllers
                 .AsEnumerable());
         }
 
-        // GET api/?order=...
+        // GET api/recommended?genre=...
+
         [HttpGet("recommended")]
-        public IActionResult GetRecommendedBooks([FromQuery(Name = "genre")] string genre)
+        public IActionResult GetRecommendedBooks([FromQuery(Name = "genre")] string? genre)
         {
-            if (genre is null)
-            {
-                return BadRequest("\"genre\" parameter must be specified for this querry");
-            }
+            // set genre filter, if genre was specified
+            Func<Book, bool> filter = genre is null ? b => true : b => b.Genre == genre;
 
             return Ok(
                 this._dataContext.Books
@@ -68,8 +67,8 @@ namespace rny_Testtask2.Controllers
                 .Include(b => b.Reviews)
                 // apparently, string.equals is not supported by LINQ, so yeah...
                 .AsEnumerable()
-                // filter by genre
-                .Where(b => b.Genre == genre)
+                // filter by genre, if any specified
+                .Where(filter)
                 // remap to BookDTO
                 .Select(b => BookDto.CreateForList(b))
                 // filter by number of reviews
@@ -208,7 +207,7 @@ namespace rny_Testtask2.Controllers
             return Ok(new { id = _review.Id });
         }
 
-        // PUT api/books/id/review
+        // PUT api/books/id/rate
         [HttpPut("books/{id}/rate")]
         public async Task<IActionResult> PutRate([FromBody] RateDto rate, int id)
         {
@@ -238,5 +237,15 @@ namespace rny_Testtask2.Controllers
             await _dataContext.SaveChangesAsync();
             return Ok(new { id = _rating.Id });
         }
+
+        // GET api/genres
+        [HttpGet("genres")]
+        public async Task<IActionResult> GetGenres()
+        {
+            return Ok(
+                await _dataContext.Books.AsQueryable().GroupBy(b => b.Genre).Select(g => g.Key).OrderBy(g => g).ToArrayAsync()
+            );
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace rny_Testtask2.DTO
 {
-    public class DTOHelper
+    public static class DtoHelper
     {
         public static decimal GetBookRating(Book book)
         {

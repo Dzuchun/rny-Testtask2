@@ -1,6 +1,8 @@
 ﻿using rny_Testtask2.DTO;
 using rny_Testtask2.models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace rny_Testtask2.dto
 {
@@ -30,8 +32,9 @@ namespace rny_Testtask2.dto
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
-                Rating = DTOHelper.GetBookRating(book),
+                Rating = DtoHelper.GetBookRating(book),
                 ReviewsNumber = book.Reviews.Count(),
+                Cover = book.Cover, // I'm gonna regret this.
             };
         }
 
@@ -44,7 +47,8 @@ namespace rny_Testtask2.dto
                 Author = book.Author,
                 Cover = book.Cover,
                 Content = book.Content,
-                Rating = DTOHelper.GetBookRating(book),
+                Rating = DtoHelper.GetBookRating(book),
+                Genre = book.Genre,
                 Reviews = book.Reviews.Select(r => new Review
                 {
                     Id = r.Id,
